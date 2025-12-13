@@ -1,0 +1,72 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" version="29.2.7">
+  <diagram name="Neo4j Schema" id="neo4j-schema">
+    <mxGraphModel dx="662" dy="737" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="article-node" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="Article&#xa;&#xa;Properties:&#xa;• id (unique)&#xa;• title&#xa;• summary&#xa;• url&#xa;• source&#xa;• language" vertex="1">
+          <mxGeometry height="140" width="180" x="480" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-node" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" value="Topic&#xa;&#xa;Properties:&#xa;• name (unique)&#xa;• description" vertex="1">
+          <mxGeometry height="100" width="180" x="200" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="author-node" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;" value="Author&#xa;&#xa;Properties:&#xa;• id (unique)&#xa;• name&#xa;• affiliation" vertex="1">
+          <mxGeometry height="100" width="180" x="480" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="tag-node" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" value="Tag&#xa;&#xa;Properties:&#xa;• name (unique)" vertex="1">
+          <mxGeometry height="80" width="140" x="760" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="concept-node" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12;" value="Concept&#xa;&#xa;Properties:&#xa;• id (unique)" vertex="1">
+          <mxGeometry height="80" width="140" x="200" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="has-topic" edge="1" parent="1" source="article-node" style="endArrow=block;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#82b366;" target="topic-node" value="HAS_TOPIC">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="has-tag" edge="1" parent="1" source="article-node" style="endArrow=block;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#b85450;" target="tag-node" value="HAS_TAG">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="written-by" edge="1" parent="1" source="article-node" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#d6b656;" target="author-node" value="WRITTEN_BY">
+          <mxGeometry height="50" relative="1" width="50" x="0.25" y="20" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="related-article" edge="1" parent="1" source="article-node" style="endArrow=block;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#6c8ebf;curved=1;" target="article-node" value="RELATED_ARTICLE&#xa;{score: float}">
+          <mxGeometry height="50" relative="1" width="50" x="0.68" y="-45" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="525" y="340" />
+              <mxPoint x="615" y="340" />
+            </Array>
+            <mxPoint x="600" y="500" as="sourcePoint" />
+            <mxPoint x="650" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="related-topic" edge="1" parent="1" source="topic-node" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#82b366;curved=1;" target="topic-node" value="RELATED_TO_TOPIC">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="290" y="300" />
+              <mxPoint x="290" y="300" />
+            </Array>
+            <mxPoint x="300" y="400" as="sourcePoint" />
+            <mxPoint x="350" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="expert-in" edge="1" parent="1" source="author-node" style="endArrow=block;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#9673a6;" target="topic-node" value="EXPERT_IN">
+          <mxGeometry height="50" relative="1" width="50" as="geometry" />
+        </mxCell>
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="Neo4j Knowledge Graph Schema" vertex="1">
+          <mxGeometry height="40" width="360" x="400" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;" value="" vertex="1">
+          <mxGeometry height="190" width="200" x="760" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" value="Legend" vertex="1">
+          <mxGeometry height="20" width="160" x="780" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;" value="• Relationships are directional&#xa;• Unique constraints on:&#xa;  - Article.id&#xa;  - Topic.name&#xa;  - Author.id&#xa;  - Tag.name&#xa;  - Concept.id&#xa;• Indexes on:&#xa;  - Topic.name&#xa;  - Article.title&#xa;  - Tag.name" vertex="1">
+          <mxGeometry height="60" width="160" x="780" y="460" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

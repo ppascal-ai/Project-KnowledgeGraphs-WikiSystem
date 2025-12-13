@@ -68,7 +68,27 @@ Ce projet utilise :
 
 ---
 
-# **3. Modèle de graphe Neo4j**
+# **3. Diagrams**
+
+## **Neo4j Graph Schema**
+
+The schema diagram shows all node types, relationships, and key properties used in the knowledge graph.
+
+![Neo4j Schema](docs/diagrams/neo4j_schema.png)
+
+> **Note:** The diagram source file is available at `docs/diagrams/neo4j_schema.drawio`. To export as PNG, open the file in [draw.io](https://app.diagrams.net/) and use File → Export as → PNG.
+
+## **System Architecture**
+
+The architecture diagram illustrates the services, ports, and data flows between components.
+
+![System Architecture](docs/diagrams/architecture.png)
+
+> **Note:** The diagram source file is available at `docs/diagrams/architecture.drawio`. To export as PNG, open the file in [draw.io](https://app.diagrams.net/) and use File → Export as → PNG.
+
+---
+
+# **4. Modèle de graphe Neo4j**
 
 Nous modélisons un écosystème documentaire via les labels :
 
@@ -99,7 +119,17 @@ Créés automatiquement dans `scripts/seed_data.py`.
 
 ---
 
-# **4. Population de la base (seed)**
+## **Modeling Rationale**
+
+This knowledge graph model is designed to represent a company's internal documentation ecosystem, where articles, topics, authors, and tags form a connected network of knowledge. The choice of node types reflects real-world entities: **Articles** represent the core content (documents, guides, tutorials), **Topics** capture subject matter domains, **Authors** track content creators, and **Tags** provide flexible categorization.
+
+The relationships enable powerful traversal patterns: `HAS_TOPIC` and `HAS_TAG` link content to concepts, `WRITTEN_BY` attributes authorship, `RELATED_ARTICLE` enables content discovery through similarity scores, `RELATED_TO_TOPIC` connects related domains, and `EXPERT_IN` maps author expertise. This structure supports semantic search (finding articles by topic/tag), recommendation systems (related articles), and author contribution analysis.
+
+A graph database like Neo4j is ideal for this use case because knowledge bases are inherently relational—concepts connect to other concepts, articles reference topics, and authors contribute across domains. Graph traversal enables efficient discovery of related content, multi-hop queries (e.g., "find all articles by authors who are experts in AI"), and natural representation of the interconnected nature of organizational knowledge. Unlike relational databases, the graph model avoids complex JOINs and allows flexible schema evolution as new relationship types emerge.
+
+---
+
+# **5. Population de la base (seed)**
 
 Le script `scripts/seed_data.py` :
 
@@ -121,95 +151,139 @@ make seed
 
 ---
 
-# **5. Lancement du projet**
+# **6. How to Run**
 
-## ** After cloning the repository, environment variables must be initialized using the provided .env.example file.**
+> **Note:** After cloning the repository, environment variables must be initialized using the provided `.env.example` file.
 
-### **1. Démarrer les services**
+## **1. Start Services**
+
+Start all services (Neo4j and FastAPI) using Docker Compose:
 
 ```bash
 make up
 ```
 
-Equivalent :
+Or directly:
 
 ```bash
 docker-compose up --build -d
 ```
 
----
+## **2. Seed the Database**
 
-### **2. Accéder aux services**
-
-| Service               | URL                                                      |
-| --------------------- | -------------------------------------------------------- |
-| API FastAPI           | [http://localhost:8000](http://localhost:8000)           |
-| Documentation Swagger | [http://localhost:8000/docs](http://localhost:8000/docs) |
-| Neo4j Browser         | [http://localhost:7474](http://localhost:7474)           |
-
----
-
-### **3. Peupler Neo4j**
+Populate Neo4j with sample data (constraints, indexes, and initial content):
 
 ```bash
 make seed
 ```
 
----
+## **3. Run Tests**
 
-### **4. Exécuter les tests**
+Execute the test suite:
 
-```
+```bash
 make test
 ```
 
-Résultat attendu :
+Expected result:
 
 ```
 4 passed in X.XXs
 ```
 
+## **Useful Links**
+
+Once services are running, access:
+
+| Service               | URL                                                      |
+| --------------------- | -------------------------------------------------------- |
+| **Swagger/OpenAPI Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) |
+| **Health Check**      | [http://localhost:8000/health](http://localhost:8000/health) |
+| **Neo4j Browser**     | [http://localhost:7474](http://localhost:7474)           |
+
+Default Neo4j credentials: `neo4j` / `password` (configured via `.env` file).
+
 ---
 
-# **6. API – Endpoints principaux**
+# **7. API – Endpoints principaux**
 
 La documentation complète est disponible sur Swagger :
  **[http://localhost:8000/docs](http://localhost:8000/docs)**
 
 ---
 
-## **GET /api/search?q=...**
+## **API Examples**
 
-Recherche d’articles selon :
+### **1. Health Check**
+
+```bash
+curl http://localhost:8000/health
+```
+
+Response:
+```json
+{
+  "status": "ok",
+  "neo4j": "up"
+}
+```
+
+### **2. Search Articles**
+
+Search for articles by title, summary, topics, or tags:
+
+```bash
+curl "http://localhost:8000/api/search?q=graph&limit=10"
+```
+
+Response includes articles with their associated topics and tags.
+
+### **3. Get Related Articles**
+
+Retrieve articles related to a specific article via `RELATED_ARTICLE` relationships:
+
+```bash
+curl http://localhost:8000/api/articles/article-1/related?limit=5
+```
+
+Response includes related articles sorted by similarity score.
+
+### **4. Get Topic Graph**
+
+Fetch a subgraph around a topic (related topics, articles, and authors):
+
+```bash
+curl "http://localhost:8000/api/topics/Knowledge%20Graphs/graph?depth=1"
+```
+
+### **5. Get Author Contributions**
+
+View all contributions by an author (articles, topics, tags):
+
+```bash
+curl http://localhost:8000/api/authors/author-1/contributions
+```
+
+---
+
+## **Endpoint Details**
+
+### **GET /api/search?q=...&limit=...**
+
+Recherche d'articles selon :
 
 * titre
 * résumé
 * topics
 * tags
 
-**Exemple :**
+Renvoie une liste d'articles + leurs topics et tags.
 
-```
-/api/search?q=graph
-```
-
-Renvoie une liste d’articles + leurs topics et tags.
-
----
-
-## **GET /api/articles/{article_id}/related**
+### **GET /api/articles/{article_id}/related?limit=...**
 
 Renvoie les articles liés via `RELATED_ARTICLE` triés par score.
 
-**Exemple :**
-
-```
-/api/articles/article-1/related
-```
-
----
-
-## **GET /api/topics/{topic_id}/graph**
+### **GET /api/topics/{topic_id}/graph?depth=...**
 
 Renvoie un sous-graphe composé de :
 
@@ -218,15 +292,7 @@ Renvoie un sous-graphe composé de :
 * les articles associés
 * les auteurs liés
 
-**Exemple :**
-
-```
-/api/topics/Knowledge%20Graphs/graph
-```
-
----
-
-## **GET /api/authors/{author_id}/contributions**
+### **GET /api/authors/{author_id}/contributions**
 
 Renvoie :
 
@@ -234,15 +300,9 @@ Renvoie :
 * topics associés
 * tags associés
 
-**Exemple :**
-
-```
-/api/authors/author-1/contributions
-```
-
 ---
 
-# **7. Tests**
+# **8. Tests**
 
 Les tests automatisés couvrent :
 
@@ -259,7 +319,7 @@ make test
 
 ---
 
-# **8. Choix de design**
+# **9. Choix de design**
 
 * FastAPI pour une API simple, rapide, bien documentée.
 * Neo4j pour la modélisation flexible de relations entre entités.
@@ -269,7 +329,7 @@ make test
 
 ---
 
-# **9. Améliorations possibles**
+# **10. Améliorations possibles**
 
 * Ajout d’un **Full-Text Search Index** Neo4j pour meilleure recherche.
 * Intégration d’un système d’embeddings (LLM) pour suggestions complexes.
@@ -278,7 +338,7 @@ make test
 
 ---
 
-# **10. Conclusion**
+# **11. Conclusion**
 
 Ce projet démontre :
 
