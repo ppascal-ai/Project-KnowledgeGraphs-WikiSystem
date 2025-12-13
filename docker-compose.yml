@@ -25,6 +25,15 @@ services:
       - "8000:8000"
     volumes:
       - .:/code
+  tests:
+    build: .
+    env_file:
+      - .env
+    command: pytest -q
+    depends_on:
+      - neo4j
+    volumes:
+      - .:/code
 
 volumes:
   neo4j_data:
