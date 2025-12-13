@@ -34,7 +34,7 @@ seed:
 	docker-compose exec api python scripts/seed_data.py
 
 test:
-	docker-compose exec api pytest -q --cov=app --cov-report=term-missing
+	docker-compose exec api pytest
 
 lint:
 	docker-compose exec api pylint app --fail-under=9.5
