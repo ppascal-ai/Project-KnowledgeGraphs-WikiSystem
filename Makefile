@@ -1,8 +1,9 @@
-.PHONY: help install run up down docker-run seed test lint format clean logs
+.PHONY: help venv install run up down docker-run seed test lint format clean logs
 
 help:
-	@echo "Targets:"
-	@echo "  install     Install deps locally"
+	@echo "Commands:"
+	@echo "  make venv           Create local virtualenv (.venv)"
+	@echo "  make install        Install requirements into .venv"
 	@echo "  run         Run API locally"
 	@echo "  docker-run  Build & run with docker-compose"
 	@echo "  up/down     Start/stop containers"
@@ -12,8 +13,16 @@ help:
 	@echo "  format      Run black"
 	@echo "  clean       Clean cache/pyc"
 
-install:
-	pip install -r requirements.txt
+venv:
+	@if [ ! -d ".venv" ]; then \
+		python3 -m venv .venv; \
+		. .venv/bin/activate && pip install --upgrade pip; \
+		echo "Created .venv"; \
+	else echo ".venv already exists"; fi
+	@echo "To activate: source .venv/bin/activate"
+
+install: venv
+	@. .venv/bin/activate && pip install -r requirements.txt
 
 run:
 	uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
