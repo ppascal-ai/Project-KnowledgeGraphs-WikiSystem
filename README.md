@@ -123,6 +123,8 @@ make seed
 
 # **5. Lancement du projet**
 
+## ** After cloning the repository, environment variables must be initialized using the provided .env.example file.**
+
 ### **1. Démarrer les services**
 
 ```bash
