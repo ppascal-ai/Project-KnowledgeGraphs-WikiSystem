@@ -35,6 +35,23 @@ Ce projet utilise :
 * **Neo4j Python Driver**
 * **pytest** pour les tests unitaires et d’intégration
 
+## Dataset
+
+This project uses a real-world public dataset derived from the English Wikipedia
+(WikiGraphs dataset, December 2018).
+
+We selected the **Squirrels** subset, which represents a page-page network of
+Wikipedia articles related to squirrels.
+
+- Nodes represent Wikipedia articles
+- Edges represent mutual page links
+- Dataset size: ~5,000 nodes, ~198,000 edges
+- License: CC BY-SA (Wikipedia)
+
+Source:
+https://github.com/benedekrozemberczki/datasets
+
+
 ---
 
 # **2. Architecture du projet**

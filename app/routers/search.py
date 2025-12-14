@@ -78,7 +78,7 @@ def search_articles(
 
         results.append(
             ArticleWithContext(
-                **article.dict(),
+                **article.model_dump(),
                 topics=topics,
                 tags=tags,
             )
